@@ -1,0 +1,52 @@
+[tool.poetry]
+name = "font-name-tool"
+version = "0.1.0"
+description = "CLI tool for reading and writing the name table in TTF and OTF fonts"
+repository = "https://github.com/andrewsuzuki/font-name-tool"
+authors = [
+    "Andrew Suzuki", # no email ok?
+]
+license = "MIT"
+readme = "README.md"
+packages = [{ include = "font_name_tool" }]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Operating System :: OS Independent",
+    "Topic :: File Formats",
+    "Topic :: Utilities",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8.1"
+fonttools = "^4.55.3"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.12"
+isort = "^5.13"
+flake8 = "^7.0"
+mypy = "^1.8"
+coverage = "^7.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+font-name-tool = "font_name_tool.cli:main"
+
+[tool.black]
+line-length = 88
+target-version = ["py38"]
+include = '\.pyi?$'
+
+[tool.isort]
+line_length = 88
+profile = "black"
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
