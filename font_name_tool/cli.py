@@ -3,6 +3,7 @@ import json
 import os
 import re
 import sys
+from importlib import metadata
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from fontTools.ttLib import TTFont  # type: ignore[import-untyped]
@@ -610,20 +611,20 @@ class CliArgumentParser:
             raise ValueError("Empty string")
 
         # Start looks like hex?
-        if re.search(r"^-?0x", string_stripped_lowered):
-            if not re.search(r"^0x[0-9a-f]+$", string_stripped_lowered):
+        if re.search(r"(?m)\A-?0x", string_stripped_lowered):
+            if not re.search(r"(?m)\A0x[0-9a-f]+\Z", string_stripped_lowered):
                 raise ValueError(
                     f"Invalid base 16 whole number: {string}"
                 )  # e.g. '-0x1', 0x 1', '0x-1'
             return int(string_stripped_lowered[2:], 16)
         # Start looks like decimal?
-        elif re.search(r"^-?[0-9]", string_stripped_lowered):
-            if not re.search(r"^[0-9]+$", string_stripped_lowered):
+        elif re.search(r"(?m)\A-?[0-9]", string_stripped_lowered):
+            if not re.search(r"(?m)\A[0-9]+\Z", string_stripped_lowered):
                 raise ValueError(
                     f"Invalid base 10 whole number: {string}"
                 )  # e.g. '-1', '1a'
             return int(string_stripped_lowered)
-        elif re.search(r"^[a-z][a-z0-9_-]+$", string_stripped_lowered):
+        elif re.search(r"(?m)\A[a-z][a-z0-9_-]+\Z", string_stripped_lowered):
             return string_stripped_lowered  # likely code
         raise ValueError(f"Invalid whole number or code: {string}")
 
@@ -632,6 +633,12 @@ class CliArgumentParser:
         parser = argparse.ArgumentParser(
             description="Read and write font name tables",
             allow_abbrev=False,
+        )
+        parser.add_argument(
+            "--version",
+            action="version",
+            version=metadata.version("font-name-tool"),
+            help="Print the program version",
         )
         subparsers = parser.add_subparsers(dest="command", required=True)
 

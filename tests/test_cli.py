@@ -60,7 +60,7 @@ class TestConstants(unittest.TestCase):
                 if is_str:
                     self.assertTrue(code)
                     self.assertEqual(code.lower(), code)
-                    self.assertRegex(code, r"^[a-z][a-z0-9_-]+$")
+                    self.assertRegex(code, r"(?m)\A[a-z][a-z0-9_-]+\Z")
                     # implied by the above regex now:
                     # self.assertNotRegex(code, r"^\d+$")  # not only digits
                     # self.assertNotRegex(code, r"^0[xX]")  # not starting with 0x or 0X
@@ -125,7 +125,7 @@ class TestConstants(unittest.TestCase):
             self.assertIsInstance(PLATFORM_ID_TO_CODES[platform_id], tuple)
             self.assertIsInstance(PLATFORM_ID_TO_CODES[platform_id][0], str)
             for code in PLATFORM_ID_TO_CODES[platform_id]:
-                self.assertRegex(code, r"^[a-z_]+$")
+                self.assertRegex(code, r"(?m)\A[a-z_]+\Z")
                 all_codes.add(code)
         self.assertEqual(all_codes, set(PLATFORM_CODE_TO_ID.keys()))
         self.assertEqual(PLATFORM_CODE_TO_ID["macintosh"], PLATFORM_ID_MACINTOSH)
@@ -225,7 +225,7 @@ class TestConstants(unittest.TestCase):
             self.assertIsInstance(codes, tuple)
             self.assertIsInstance(codes[0], str)
             for code in codes:
-                self.assertRegex(code, r"^[a-z_]+$")
+                self.assertRegex(code, r"(?m)\A[a-z_]+\Z")
                 all_codes.add(code)
         self.assertEqual(len(set(all_codes)), len(all_codes))
         self.assertEqual(set(all_codes), set(NAME_CODE_TO_ID.keys()))
@@ -638,6 +638,16 @@ class TestCliArgumentParser(unittest.TestCase):
         # "options:" for python 3.10+, "optional arguments:" for 3.8/3.9
         self.assertTrue("options:" in stdout or "optional arguments:" in stdout)
         self.assertTrue(stdout.startswith(f"usage: {tool_name} [-h]"))
+
+    def test_version(self):
+        tool_name = "foo-tool-name"
+        _, stdout, _ = self.assert_parser_output(
+            [tool_name, "--version"],
+            expect_exit=True,
+            expected_exit_code=0,
+            expect_stdout=True,
+        )
+        self.assertRegex(stdout, r"(?m)\A\d+\.\d+\.\d+\n\Z")
 
     def test_print_command_args(self):
         tool_name = "foo-tool-name"
