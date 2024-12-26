@@ -635,7 +635,8 @@ class TestCliArgumentParser(unittest.TestCase):
             expect_stdout=True,
         )
         self.assertIn("positional arguments:", stdout)
-        self.assertIn("options:", stdout)
+        # "options:" for python 3.10+, "optional arguments:" for 3.8/3.9
+        self.assertTrue("options:" in stdout or "optional arguments:" in stdout)
         self.assertTrue(stdout.startswith(f"usage: {tool_name} [-h]"))
 
     def test_print_command_args(self):
