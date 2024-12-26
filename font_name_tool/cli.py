@@ -630,14 +630,14 @@ class CliArgumentParser:
     @staticmethod
     def parse_args() -> argparse.Namespace:
         parser = argparse.ArgumentParser(
-            description="Manipulate font name tables",
+            description="Read and write font name tables",
             allow_abbrev=False,
         )
         subparsers = parser.add_subparsers(dest="command", required=True)
 
         # Print command
         print_parser = subparsers.add_parser(
-            CliArgumentParser.COMMAND_PRINT, help="Display name table records"
+            CliArgumentParser.COMMAND_PRINT, help="Print all name table records"
         )
         CliArgumentParser.add_common_args(print_parser)
         CliArgumentParser.add_printing_args(print_parser, allow_quiet=False)
